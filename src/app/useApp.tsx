@@ -1,29 +1,42 @@
+import { Repository, User, find } from "@/services/user.service";
 import { FormEvent, useState } from "react";
-import { User, find } from "@/services/user.service";
-
-type Repository = {
-  name: string;
-  description: string;
-};
+import { FaTrashAlt } from "react-icons/fa";
 
 export const useApp = () => {
   const [user, setuser] = useState<User>();
 
-  const [repositories, setRepositories] = useState<Repository>();
+  const createRepositoriesTable = (repository: Repository) => ({
+    ...repository,
+    options: (
+      <div className="flex flex-row justify-center gap-6">
+        <FaTrashAlt
+          title="Deletar"
+          className="cursor-pointer text-red-600"
+          onClick={() => {}}
+        />
+      </div>
+    ),
+  });
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const props = {
-      selects: ["login", "id", "name"],
+      selects: ["login", "id", "name", "repositories"],
       filters: {
         login: user?.login,
       },
     };
 
     const [response] = await find(props);
-    setuser(response);
+    const { repositories, ...rest } = response;
+
+    const repositoryList = repositories.map((repository) =>
+      createRepositoriesTable(repository)
+    );
+
+    setuser({ repositories: repositoryList, ...rest });
   };
 
-  return { user, setuser, repositories, setRepositories, handleSubmit };
+  return { user, setuser, handleSubmit };
 };

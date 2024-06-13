@@ -2,13 +2,14 @@
 
 import { Button } from "@/components/button";
 import { Input } from "@/components/input";
+import { Table } from "@/components/table";
 import { useApp } from "./useApp";
 
 export default function Home() {
   const { user, setuser, handleSubmit } = useApp();
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex min-h-screen flex-col items-center gap-12 p-24">
       <form className="flex flex-column gap-4" onSubmit={handleSubmit}>
         <Input
           name="login"
@@ -19,7 +20,29 @@ export default function Home() {
         <Button>Buscar</Button>
       </form>
 
-      <div></div>
+      {user?.repositories && user.repositories.length && (
+        <Table
+          columns={[
+            {
+              label: "Id",
+              key: "id",
+            },
+            {
+              label: "Nome",
+              key: "name",
+            },
+            {
+              label: "Linguagem",
+              key: "language",
+            },
+            {
+              label: "Opções",
+              key: "options",
+            },
+          ]}
+          rows={user?.repositories}
+        />
+      )}
     </main>
   );
 }

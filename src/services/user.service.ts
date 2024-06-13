@@ -1,4 +1,11 @@
 import http from "@/config/http";
+import { getPathProps, FindProps } from "@/utils/get-path-props";
+
+export type Repository = {
+  id: number;
+  name: string;
+  language: string;
+};
 
 export type User = {
   login: string;
@@ -11,41 +18,10 @@ export type User = {
   public_gists: number;
   followers: number;
   following: number;
+  repositories: Repository[] | [];
 };
 
-const getPathProps = (props: FindProps) => {
-  const { selects, filters } = props;
-
-  let path = "";
-
-  let selectsPath = "";
-
-  if (selects && selects.length) {
-    const data = selects.map((value) => `select=${value}`);
-    selectsPath = selectsPath.concat(`${data.join("&")}`);
-  }
-
-  if (selectsPath.length) path += selectsPath;
-
-  let filtersPath = "";
-  const strainers = Object.entries(filters);
-
-  if (strainers && strainers.length) {
-    const concatFilters = strainers.map(([key, value]) => `${key}=${value}`);
-    filtersPath = filtersPath.concat(`${concatFilters.join("&")}`);
-  }
-
-  path += path.length ? `&${filtersPath}` : filtersPath;
-
-  return `?${path}`;
-};
-
-type FindProps = {
-  selects: Array<string>;
-  filters: Partial<User>;
-};
-
-export const find = async (pros: FindProps): Promise<User[]> => {
+export const find = async (pros: FindProps<User>): Promise<User[]> => {
   // eslint-disable-next-line no-useless-catch
   try {
     const path = getPathProps(pros);
