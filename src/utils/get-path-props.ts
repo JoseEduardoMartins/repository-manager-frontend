@@ -1,6 +1,6 @@
 export type FindProps<T> = {
-  selects: Array<string>;
-  filters: Partial<T>;
+  selects?: Array<string>;
+  filters?: Partial<T>;
 };
 
 export const getPathProps = (props: FindProps<unknown>) => {
@@ -18,7 +18,7 @@ export const getPathProps = (props: FindProps<unknown>) => {
   if (selectsPath.length) path += selectsPath;
 
   let filtersPath = "";
-  const strainers = Object.entries(filters);
+  const strainers = Object.entries(filters || {});
 
   if (strainers && strainers.length) {
     const concatFilters = strainers.map(([key, value]) => `${key}=${value}`);

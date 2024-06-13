@@ -20,7 +20,7 @@ export default function Home() {
         <Button>Buscar</Button>
       </form>
 
-      {user?.repositories && user.repositories.length && (
+      {user?.repositories && user.repositories.length ? (
         <Table
           columns={[
             {
@@ -42,6 +42,8 @@ export default function Home() {
           ]}
           rows={user?.repositories}
         />
+      ) : (
+        <h2>Usuario sem repositorios</h2>
       )}
     </main>
   );

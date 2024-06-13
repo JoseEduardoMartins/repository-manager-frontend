@@ -1,11 +1,6 @@
 import http from "@/config/http";
 import { getPathProps, FindProps } from "@/utils/get-path-props";
-
-export type Repository = {
-  id: number;
-  name: string;
-  language: string;
-};
+import { Repository } from "./repository.service";
 
 export type User = {
   login: string;
