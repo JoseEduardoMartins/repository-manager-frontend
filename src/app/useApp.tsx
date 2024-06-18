@@ -1,10 +1,15 @@
-import { User, find } from "@/services/user.service";
+import { User, findByLogin } from "@/services/user.service";
 import { Repository, remove } from "@/services/repository.service";
 import { FormEvent, useState } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 
 export const useApp = () => {
-  const [user, setuser] = useState<User>();
+  const [user, setuser] = useState<User>({
+    login: "",
+    id: 0,
+    name: "",
+    repositories: [],
+  });
 
   const createRepositoriesTable = (repository: Repository) => ({
     ...repository,
@@ -23,22 +28,15 @@ export const useApp = () => {
     try {
       await remove(id);
 
-      const props = {
-        selects: ["login", "id", "name", "repositories"],
-        filters: {
-          login: user?.login,
-        },
-      };
-
-      await loadUser(props);
+      await loadUser();
     } catch (error) {
       alert("error");
     }
   };
 
-  const loadUser = async (props = {}) => {
+  const loadUser = async () => {
     try {
-      const [response] = await find(props);
+      const response = await findByLogin(user.login);
       const { repositories, ...rest } = response;
 
       const repositoryList = repositories.map((repository) =>
@@ -54,14 +52,7 @@ export const useApp = () => {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const props = {
-      selects: ["login", "id", "name", "repositories"],
-      filters: {
-        login: user?.login,
-      },
-    };
-
-    loadUser(props);
+    loadUser();
   };
 
   return { user, setuser, handleSubmit };
